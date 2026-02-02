@@ -301,16 +301,6 @@ p {
   position: relative;
 }
 
-/* Header Logo */
-.logo {
-  filter: brightness(0) saturate(100%) invert(1) sepia(1) hue-rotate(90deg) saturate(1.5);
-  transition: filter 0.3s ease;
-}
-
-.logo:hover {
-  filter: brightness(1.1) saturate(100%) invert(1) sepia(1) hue-rotate(90deg) saturate(1.5);
-}
-
 /* Utility Class */
 .spacing-t {
   margin-top: 5rem;
