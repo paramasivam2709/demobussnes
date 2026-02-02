@@ -1,0 +1,849 @@
+/*
+
+JS INDEX
+===================
+
+1. Preloader
+2. Dynamically set BG
+3. Hero Bg Slider Home One
+4. Hero One testimonial Area
+5. Portfolio One Area
+6. About One Area
+7. Faq One Area
+8. Testimonials One Area
+9. Portfolio Two Area
+10. Testimonials Two Area
+11. Testimonials Three Area
+12. Team Two Area
+13. Pricing One Area
+14. Hero Two Area
+15. Hero Three Area
+16. Testimonials Four Area
+17. Portfolio Three Area
+18. About Three Area
+19. Hero Five Area
+20. Pure Counter
+21. Preloader
+
+------------------------------------------------------------------*/
+
+
+"use strict";
+
+/* =============================
+* 2. Dynamically set BG
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const bgDivs = document.querySelectorAll("[data-bg-img]");
+  if (bgDivs.length > 0) {
+    bgDivs.forEach((div) => {
+      const bgImg = div.getAttribute("data-bg-img");
+      if (bgImg) {
+        div.style.background = `url(${bgImg})`;
+        div.style.backgroundSize = "cover";
+        div.style.backgroundPosition = "center";
+        div.style.zIndex = "999";
+      }
+    });
+  }
+});
+
+/* =============================
+* 3. Hero Bg Slider Home One
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const bgSliderContainer = document.querySelector(".hero__bg-slider");
+  const heroSection = document.querySelector(".hero--one");
+
+  if (!bgSliderContainer || !heroSection) {
+    return;
+  }
+
+  const bgSlider = tns({
+    container: ".hero__bg-slider",
+    items: 1,
+    slideBy: "page",
+    autoplay: true,
+    autoplayTimeout: 4000,
+    autoplayButtonOutput: false,
+    controls: false,
+    nav: true,
+    loop: true,
+    mouseDrag: false,
+    touch: false,
+    speed: 1000,
+  });
+
+  function updateHeroBackground(index) {
+    const currentSlide = document.querySelectorAll(".hero__bg-slide")[index];
+    if (!currentSlide) return;
+    const bg = currentSlide.getAttribute("data-bg");
+    if (bg) {
+      heroSection.style.backgroundImage = `url(${bg})`;
+    }
+  }
+
+  updateHeroBackground(bgSlider.getInfo().index);
+
+  bgSlider.events.on("indexChanged", function (info) {
+    updateHeroBackground(info.index);
+  });
+});
+
+/* =============================
+* 4. Hero One testimonial Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const container = document.querySelector(".hero__testimonial-slider");
+  const prevBtn = document.querySelector(".nav-prev");
+  const nextBtn = document.querySelector(".nav-next");
+
+  if (!container) {
+    return;
+  }
+
+  const testimonialSlider = tns({
+    container: container,
+    autoHeight: true,
+    items: 1,
+    swipeAngle: false,
+    speed: 400,
+    nav: false,
+    gutter: 20,
+    prevButton: prevBtn || undefined,
+    nextButton: nextBtn || undefined,
+  });
+});
+
+/* =============================
+* 5. Portfolio One Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const items = document.querySelectorAll(".portfolio-list__item");
+  const image = document.getElementById("portfolio-image");
+  const text = document.getElementById("portfolio-text");
+
+  items.forEach((item) => {
+    item.addEventListener("click", () => {
+      // Remove active class from all
+      items.forEach((el) =>
+        el.classList.remove("portfolio-list__item--active")
+      );
+
+      // Add to clicked one
+      item.classList.add("portfolio-list__item--active");
+
+      // Update right side image and text
+      const newImage = item.getAttribute("data-image");
+      const newText = item.getAttribute("data-text");
+
+      image.src = newImage;
+      text.textContent = newText;
+    });
+  });
+});
+
+/* =============================
+* 6. About One Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const container = document.querySelector(".about__flip-items");
+  const navContainer = document.querySelector(".about__flip-nav");
+
+  if (!container || !navContainer) {
+    return;
+  }
+
+  const servicesFlip = tns({
+    container: container,
+    items: 1,
+    autoHeight: true,
+    swipeAngle: false,
+    speed: 400,
+    gutter: 20,
+    controls: false,
+    nav: false,
+  });
+
+  const slideCount = servicesFlip.getInfo().slideCount;
+
+  for (let i = 0; i < slideCount; i++) {
+    const dot = document.createElement("button");
+    dot.classList.add("nav-dot");
+    if (i === 0) dot.classList.add("active");
+    dot.setAttribute("data-slide", i);
+    navContainer.appendChild(dot);
+
+    dot.addEventListener("click", function () {
+      servicesFlip.goTo(i);
+    });
+  }
+
+  // Update active class when slide changes
+  servicesFlip.events.on("indexChanged", function (info) {
+    const currentIndex = info.displayIndex - 1;
+    document.querySelectorAll(".nav-dot").forEach(dot => {
+      dot.classList.remove("active");
+    });
+    const activeDot = document.querySelector(`.nav-dot[data-slide="${currentIndex}"]`);
+    if (activeDot) activeDot.classList.add("active");
+  });
+});
+
+/* =============================
+* 7. Faq One Area
+============================= */
+document.querySelectorAll(".faq__toggle").forEach((toggle) => {
+  toggle.addEventListener("click", function () {
+    const item = this.closest(".faq__item");
+    const answer = item.querySelector(".faq__answer");
+    const isActive = item.classList.contains("faq__item--active");
+
+    // Collapse all items first
+    document.querySelectorAll(".faq__item").forEach((i) => {
+      const a = i.querySelector(".faq__answer");
+      a.style.height = "0px";
+      i.classList.remove("faq__item--active");
+    });
+
+    if (!isActive) {
+      item.classList.add("faq__item--active");
+      answer.style.height = answer.scrollHeight + "px";
+
+      answer.addEventListener(
+        "transitionend",
+        () => {
+          if (item.classList.contains("faq__item--active")) {
+            answer.style.height = "auto";
+          }
+        },
+        { once: true }
+      );
+    }
+  });
+});
+
+/* =============================
+* 8. Testimonials One Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const testimonials = [
+    {
+      text: "From the first consultation, I knew we were in capable hands. They handled our financial concerns with care and helped reduce unnecessary costs effectively. Their transparent communication, deep expertise, and consistent follow-through made the entire experience seamless, empowering our business with renewed financial confidence.",
+      author: "David K.",
+      title: "Managing Director",
+      imageUrl: "./img/testimonials/testimonials-1.webp",
+    },
+    {
+      text: "Elevix transformed our marketing strategy with smart, data-driven insights. Their approach boosted our engagement, conversions, and overall brand performance quickly and efficiently. We saw measurable improvements across campaigns, channels, and long-term brand positioning, along with invaluable support that made implementation faster and results-driven.",
+      author: "Sarah L.",
+      title: "Marketing Lead",
+      imageUrl: "./img/testimonials/testimonials-2.webp",
+    },
+    {
+      text: "Elevix delivered a solid, user-friendly software solution on time. Their attention to detail, reliability, and support exceeded our expectations throughout the development process. They provided regular updates, handled challenges with ease, and ensured that the final product aligned perfectly with our goals and vision.",
+      author: "Michael B.",
+      title: "CTO",
+      imageUrl: "./img/testimonials/testimonials-3.webp",
+    },
+  ];
+
+  const testimonialSliderContainer = document.getElementById("testimonials-one");
+  const prevImageElement = document.getElementById("prevImage");
+  const activeAvatarElements = document.getElementById("slide__avatar-active");
+
+  if (testimonialSliderContainer) {
+    testimonials.forEach((testimonial) => {
+      const cardHtml = `
+        <div class="testimonial-card">
+          <div class="testimonial-card__content">
+            <p class="testimonial-card__text">${testimonial.text}</p>
+            <div class="testimonials-card-avatar">
+              <img class="testimonials-avatar slider__avatar--active" src="${testimonial.imageUrl}" alt="${testimonial.author}" />
+            </div>
+            <p class="testimonial-card__author">— ${testimonial.author}</p>
+            <p class="testimonial-card__title">${testimonial.title}</p>
+          </div>
+          <div class="testimonial-card__quote quote--three">
+            <svg width="49" height="35" viewBox="0 0 49 35" fill="none">
+              <path d="M3.90324 34.2857H14.189L21.0461 20.5714V0H0.47467V20.5714H10.7604L3.90324 34.2857ZM31.3318 34.2857H41.6175L48.4747 20.5714V0H27.9032V20.5714H38.189L31.3318 34.2857Z" fill="black" />
+            </svg>
+          </div>
+        </div>
+      `;
+      testimonialSliderContainer.insertAdjacentHTML("beforeend", cardHtml);
+    });
+
+    const slider = tns({
+      container: "#testimonials-one",
+      items: 1,
+      slideBy: "page",
+      autoplay: false,
+      controls: false,
+      nav: false,
+      loop: true,
+      speed: 400,
+    });
+
+    const prevButton = document.getElementById("prevButton");
+    const nextButton = document.getElementById("nextButton");
+
+    function updatePreviewImages(info) {
+      const displayIndex = (info?.displayIndex || 1) - 1;
+      const currentIndex = displayIndex >= testimonials.length ? 0 : displayIndex;
+      const totalSlides = testimonials.length;
+      const prevIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+
+      if (prevImageElement) {
+        prevImageElement.src = testimonials[prevIndex].imageUrl;
+      }
+      if (activeAvatarElements) {
+        activeAvatarElements.src = testimonials[currentIndex].imageUrl;
+      }
+    }
+
+    updatePreviewImages({ index: slider.getInfo().index });
+
+    prevButton?.addEventListener("click", () => slider.goTo("prev"));
+    nextButton?.addEventListener("click", () => slider.goTo("next"));
+
+    slider.events.on("indexChanged", updatePreviewImages);
+  }
+});
+
+/* =============================
+* 9. Portfolio Two Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const sliderEl = document.querySelector("#portfolio-slider1");
+
+  if (sliderEl && typeof tns === "function") {
+    tns({
+      container: "#portfolio-slider1",
+      items: 1,
+      mouseDrag: true,
+      swipeAngle: false,
+      speed: 500,
+      loop: true,
+      autoplay: true,
+      autoplayTimeout: 2000,
+      autoplayHoverPause: true,
+      autoplayButtonOutput: false,
+      controls: false,
+      nav: false,
+      responsive: {
+        576: { items: 1 },
+        768: { items: 2 },
+        992: { items: 3 },
+        1400: { items: 4 },
+      }
+    });
+  }
+});
+
+/* =============================
+* 10. Testimonials Two Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const sliderContainer = document.querySelector("#testimonials-two");
+  if (!sliderContainer) {
+    return;
+  }
+
+  const testimonialsTwo = tns({
+    container: sliderContainer,
+    items: 3,
+    slideBy: 1,
+    controls: false,
+    nav: false,
+    mouseDrag: true,
+    speed: 600,
+    autoplay: true,
+    autoplayButtonOutput: false,
+    loop: true,
+    gutter: 32,
+    edgePadding: 200,
+    responsive: {
+      0: {
+        items: 1,
+        gutter: 16,
+        edgePadding: 16,
+      },
+      650: {
+        items: 2,
+        gutter: 24,
+        edgePadding: 24,
+      },
+      992: {
+        items: 2,
+        gutter: 20,
+        edgePadding: 100,
+      },
+      1400: {
+        items: 3,
+        gutter: 20,
+        edgePadding: 150,
+      },
+    }
+  });
+
+  function updateCenterSlide() {
+    const info = testimonialsTwo.getInfo();
+    const slides = document.querySelectorAll(".testimonials__item");
+
+    slides.forEach(slide => slide.classList.remove("is-center"));
+
+    const visible = info.index;
+    const itemsVisible = info.items;
+    const centerIndex = visible + Math.floor(itemsVisible / 2);
+
+    if (slides[centerIndex]) {
+      slides[centerIndex].classList.add("is-center");
+    }
+  }
+
+  updateCenterSlide();
+  sliderContainer.addEventListener('transitionend', updateCenterSlide);
+});
+
+/* =============================
+* 11. Testimonials Three Area
+============================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  const testimonials = [
+    {
+      text: "From the first consultation, I knew we were in capable hands. They handled our financial concerns with care and helped reduce unnecessary costs effectively. Their transparent communication, deep expertise, and consistent follow-through made the entire experience seamless, empowering our business with renewed financial confidence.",
+      author: "David K.",
+      title: "Managing Director",
+      imageUrl: "./img/testimonials/testimonials-1.webp",
+    },
+    {
+      text: "Elevix transformed our marketing strategy with smart, data-driven insights. Their approach boosted our engagement, conversions, and overall brand performance quickly and efficiently. We saw measurable improvements across campaigns, channels, and long-term brand positioning, along with invaluable support that made implementation faster and results-driven.",
+      author: "Sarah L.",
+      title: "Marketing Lead",
+      imageUrl: "./img/testimonials/testimonials-2.webp",
+    },
+    {
+      text: "Elevix delivered a solid, user-friendly software solution on time. Their attention to detail, reliability, and support exceeded our expectations throughout the development process. They provided regular updates, handled challenges with ease, and ensured that the final product aligned perfectly with our goals and vision.",
+      author: "Michael B.",
+      title: "CTO",
+      imageUrl: "./img/testimonials/testimonials-3.webp",
+    },
+  ];
+
+  const testimonialSliderContainer = document.getElementById("testimonial-slider-three");
+  const prevImageElement = document.getElementById("prevImage");
+  const activeAvatarElements = document.getElementById("slide__avatar-active");
+  const prevButton = document.getElementById("prevButton");
+  const nextButton = document.getElementById("nextButton");
+
+  if (testimonialSliderContainer) {
+    testimonials.forEach((testimonial) => {
+      testimonialSliderContainer.insertAdjacentHTML(
+        "beforeend",
+        `
+        <div class="testimonial-card">
+          <div class="testimonial-card__content">
+            <p class="testimonial-card__text">${testimonial.text}</p>
+            <div class="testimonials-card-avatar">
+              <img class="testimonials-avatar slider__avatar--active" src="${testimonial.imageUrl}" alt="${testimonial.author}" />
+            </div>
+            <p class="testimonial-card__author">— ${testimonial.author}</p>
+            <p class="testimonial-card__title">${testimonial.title}</p>
+          </div>
+          <div class="testimonial-card__quote quote--three">
+            <svg width="49" height="35" viewBox="0 0 49 35" fill="none">
+              <path d="M3.90324 34.2857H14.189L21.0461 20.5714V0H0.47467V20.5714H10.7604L3.90324 34.2857ZM31.3318 34.2857H41.6175L48.4747 20.5714V0H27.9032V20.5714H38.189L31.3318 34.2857Z" fill="black" />
+            </svg>
+          </div>
+        </div>
+        `
+      );
+    });
+
+    if (testimonialSliderContainer.children.length > 0 && typeof tns === "function") {
+      const slider = tns({
+        container: "#testimonial-slider-three",
+        items: 1,
+        slideBy: "page",
+        autoplay: false,
+        controls: false,
+        nav: false,
+        loop: true,
+        speed: 400,
+      });
+
+      function updatePreviewImages(info) {
+        const displayIndex = (info?.displayIndex || 1) - 1;
+        const currentIndex = displayIndex >= testimonials.length ? 0 : displayIndex;
+        const totalSlides = testimonials.length;
+        const prevIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+
+        if (prevImageElement) {
+          prevImageElement.src = testimonials[prevIndex].imageUrl;
+        }
+        if (activeAvatarElements) {
+          activeAvatarElements.src = testimonials[currentIndex].imageUrl;
+        }
+      }
+
+      updatePreviewImages({ displayIndex: slider.getInfo().displayIndex });
+
+      prevButton?.addEventListener("click", () => slider.goTo("prev"));
+      nextButton?.addEventListener("click", () => slider.goTo("next"));
+
+      slider.events.on("indexChanged", updatePreviewImages);
+    }
+  }
+});
+
+/* =============================
+* 12. Team Two Area
+============================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const mainExpertImage = document.getElementById('mainExpertImage');
+  const mainExpertRole = document.getElementById('mainExpertRole');
+  const mainExpertName = document.getElementById('mainExpertName');
+  const smallExpertsContainer = document.getElementById('smallExpertsContainer');
+
+  if (!mainExpertImage || !mainExpertRole || !mainExpertName || !smallExpertsContainer) {
+    return;
+  }
+
+  const teamMembers = [
+    {
+      id: 'leslie',
+      image: './img/team/team-member-1.webp',
+      thumbnail: './img/team/team-member-1.webp',
+      name: 'Leslie Alexander',
+      role: 'Graphics Designer',
+      social: {
+        facebook: '#',
+        twitter: '#',
+        instagram: '#',
+        pinterest: '#'
+      }
+    },
+    {
+      id: 'john',
+      image: './img/team/team-member-2.webp',
+      thumbnail: './img/team/team-member-2.webp',
+      name: 'John Doe',
+      role: 'Web Developer',
+      social: {
+        facebook: '#',
+        twitter: '#',
+        instagram: '#',
+        pinterest: '#'
+      }
+    },
+    {
+      id: 'jane',
+      image: './img/team/team-member-3.webp',
+      thumbnail: './img/team/team-member-3.webp',
+      name: 'Jane Smith',
+      role: 'UX Designer',
+      social: {
+        facebook: '#',
+        twitter: '#',
+        instagram: '#',
+        pinterest: '#'
+      }
+    },
+    {
+      id: 'peter',
+      image: './img/team/team-member-4.webp',
+      thumbnail: './img/team/team-member-4.webp',
+      name: 'Peter Jones',
+      role: 'Project Manager',
+      social: {
+        facebook: '#',
+        twitter: '#',
+        instagram: '#',
+        pinterest: '#'
+      }
+    },
+  ];
+
+  function updateMainExpert(member) {
+    mainExpertImage.src = member.image;
+    mainExpertImage.alt = member.name;
+    mainExpertName.textContent = member.name;
+    mainExpertRole.textContent = member.role;
+  }
+
+  function renderThumbnails() {
+    smallExpertsContainer.innerHTML = '';
+    teamMembers.forEach(member => {
+      const thumbnailDiv = document.createElement('div');
+      thumbnailDiv.classList.add('team__small-expert-item');
+      thumbnailDiv.dataset.id = member.id;
+
+      const thumbnailImg = document.createElement('img');
+      thumbnailImg.src = member.thumbnail;
+      thumbnailImg.alt = member.name + ' Thumbnail';
+      thumbnailImg.classList.add('team__small-expert-image');
+
+      thumbnailDiv.appendChild(thumbnailImg);
+      smallExpertsContainer.appendChild(thumbnailDiv);
+
+      thumbnailDiv.addEventListener('click', () => {
+        // Remove previous active
+        document.querySelectorAll('.team__small-expert-image.active').forEach(img => {
+          img.classList.remove('active');
+        });
+
+        // Add active to clicked thumbnail
+        thumbnailImg.classList.add('active');
+
+        // Update main expert
+        updateMainExpert(member);
+      });
+    });
+  }
+
+  renderThumbnails();
+
+  if (teamMembers.length > 0) {
+    updateMainExpert(teamMembers[0]);
+    const firstImg = smallExpertsContainer.querySelector('.team__small-expert-image');
+    if (firstImg) firstImg.classList.add('active');
+  }
+});
+
+/* =============================
+* 13. Pricing One Area
+============================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const monthlyBtn = document.getElementById('monthlyBtn');
+  const yearlyBtn = document.getElementById('yearlyBtn');
+  const prices = document.querySelectorAll('.price');
+
+  if (monthlyBtn) {
+    monthlyBtn.addEventListener('click', () => {
+      prices.forEach(price => {
+        price.innerText = price.getAttribute('data-monthly');
+      });
+      monthlyBtn.classList.add('pricing__toggle-btn--active');
+      if (yearlyBtn) yearlyBtn.classList.remove('pricing__toggle-btn--active');
+    });
+  }
+
+  if (yearlyBtn) {
+    yearlyBtn.addEventListener('click', () => {
+      prices.forEach(price => {
+        price.innerText = price.getAttribute('data-yearly');
+      });
+      yearlyBtn.classList.add('pricing__toggle-btn--active');
+      if (monthlyBtn) monthlyBtn.classList.remove('pricing__toggle-btn--active');
+    });
+  }
+});
+
+/* =============================
+* 14. Hero Two Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const thumbs = document.querySelectorAll('.hero__slider-thumb');
+  const mainImage = document.querySelector('.hero__slider-img');
+
+  thumbs.forEach(thumb => {
+    thumb.addEventListener('click', function () {
+      const newSrc = this.getAttribute('src');
+      mainImage.setAttribute('src', newSrc);
+    });
+  });
+});
+
+/* =============================
+* 15. Hero Three Area
+============================= */
+const hero_three_slider = new Swiper('#hero-three-slider', {
+  loop: true,
+  grabCursor: true,
+  centeredSlides: true,
+  slidesPerView: 'auto',
+  spaceBetween: 20,
+  autoplay: true,
+  pagination: false,
+  navigation: false,
+  breakpoints: {
+    768: {
+      slidesPerView: 2,
+    },
+    992: {
+      slidesPerView: 5,
+    },
+  }
+});
+
+/* =============================
+* 16. Testimonials Four Area
+============================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const navItems = document.querySelectorAll('.testimonials__nav-item');
+  const imageEl = document.querySelector('.testimonials__main-image');
+  const avatarEl = document.querySelector('.testimonials__avatar');
+  const textEl = document.querySelector('.testimonials__quote');
+  const authorEl = document.querySelector('.testimonials__author-name');
+  const titleEl = document.querySelector('.testimonials__author-role');
+
+  function updateContent(item) {
+    imageEl.src = item.dataset.image;
+    avatarEl.src = item.dataset.image;
+    textEl.textContent = item.dataset.text;
+    authorEl.textContent = `— ${item.dataset.author}`;
+    titleEl.textContent = item.dataset.title;
+  }
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      navItems.forEach(nav => nav.classList.remove('nav-item--active'));
+      item.classList.add('nav-item--active');
+      updateContent(item);
+    });
+  });
+
+  const defaultActive = document.querySelector('.testimonials__nav-item.nav-item--active');
+  if (defaultActive) {
+    updateContent(defaultActive);
+  }
+});
+
+/* =============================
+* 17. Portfolio Three Area
+============================= */
+document.addEventListener('DOMContentLoaded', function () {
+  const portfolioSliderThree = document.getElementById("portfolio-three-slider");
+  if (!portfolioSliderThree) return;
+
+  const testimonialSlider = tns({
+    container: "#portfolio-three-slider",
+    autoHeight: true,
+    items: 1,
+    swipeAngle: false,
+    speed: 400,
+    nav: true,
+    controls: false,
+    gutter: 20,
+    loop: true,
+    rewind: false,
+    mouseDrag: true,
+    items: 1,
+    responsive: {
+      767: {
+        nav: false,
+        edgePadding: 80
+      },
+      992: {
+        edgePadding: 100
+      },
+      1200: {
+        edgePadding: 150
+      },
+      1600: {
+        edgePadding: 300
+      },
+      1700: {
+        edgePadding: 400
+      }
+    },
+  });
+});
+
+/* =============================
+* 18. About Three Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const container = document.querySelector(".about__slider-wrap");
+  const prevBtn = document.querySelector(".nav-prev");
+  const nextBtn = document.querySelector(".nav-next");
+
+  if (!container) {
+    return;
+  }
+
+  const testimonialSlider = tns({
+    container: container,
+    autoHeight: true,
+    items: 1,
+    swipeAngle: false,
+    speed: 400,
+    nav: false,
+    gutter: 20,
+    prevButton: prevBtn || undefined,
+    nextButton: nextBtn || undefined,
+  });
+});
+
+/* =============================
+* 19. Hero Five Area
+============================= */
+document.addEventListener("DOMContentLoaded", function () {
+  const bgSliderContainer = document.querySelector("#hero-bg-slider");
+  const heroSection = document.querySelector(".hero--style-four");
+  const prevBtn = document.querySelector(".hero__bg-nav-prev");
+  const nextBtn = document.querySelector(".hero__bg-nav-next");
+
+  if (!bgSliderContainer || !heroSection) {
+    return;
+  }
+
+  const bgSlider = tns({
+    container: "#hero-bg-slider",
+    items: 1,
+    slideBy: "page",
+    autoplay: true,
+    autoplayTimeout: 4000,
+    autoplayButtonOutput: false,
+    controls: true,
+    nav: false,
+    loop: true,
+    mouseDrag: false,
+    touch: false,
+    speed: 1000,
+    prevButton: prevBtn || undefined,
+    nextButton: nextBtn || undefined,
+  });
+
+  function updateHeroBackground(index) {
+    const currentSlide = document.querySelectorAll(".hero__bg-slide")[index];
+    if (!currentSlide) return;
+    const bg = currentSlide.getAttribute("data-bg");
+    if (bg) {
+      heroSection.style.backgroundImage = `url(${bg})`;
+    }
+  }
+
+  updateHeroBackground(bgSlider.getInfo().index);
+
+  bgSlider.events.on("indexChanged", function (info) {
+    updateHeroBackground(info.index);
+  });
+});
+
+/* =============================
+* 20. Pure Counter
+============================= */
+const counter = new PureCounter();
+
+/* =============================
+* 21. Preloader
+============================= */
+document.addEventListener('DOMContentLoaded', function () {
+  var preloader = document.querySelector(".preloader");
+
+  if (!preloader) return;
+
+  setTimeout(() => {
+    preloader.style.display = "none";
+  }, 500);
+});
+
+
+
+ 
+
+
+
