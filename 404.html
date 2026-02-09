@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 – Page Not Found</title>
+
+  <!-- Existing CSS -->
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/all.min.css">
+  <link rel="stylesheet" href="./css/menu.css">
+  <link rel="stylesheet" href="./css/style.css">
+
+  <style>
+    .error-section {
+      padding: 180px 20px;
+      text-align: center;
+      background: var(--clr-base-dark);
+      color: white;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .error-title {
+      font-size: 8rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: 4px;
+      animation: float 3s ease-in-out infinite;
+      color: var(--clr-lime-green);
+    }
+
+    .error-text {
+      font-size: 1.4rem;
+      max-width: 550px;
+      margin: 0 auto 30px;
+      opacity: 0.9;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0); }
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      background: var(--clr-deep-green);
+      color: white;
+      border-radius: 40px;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn-back:hover {
+      background: var(--clr-lime-green);
+      color: var(--clr-dark);
+    }
+
+    .bg-shape {
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 300px;
+      height: 300px;
+      background: var(--clr-lime-green);
+      opacity: 0.1;
+      border-radius: 50%;
+      filter: blur(50px);
+      animation: rotate 12s linear infinite;
+    }
+
+    @keyframes rotate {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 404 Error Section -->
+  <section class="error-section">
+
+    <div class="bg-shape"></div>
+
+    <h1 class="error-title">404</h1>
+    <p class="error-text">
+      Oops! The page you are looking for could not be found.<br>
+      It might have been moved or deleted.
+    </p>
+
+    <a href="index.html" class="btn-back">
+      <i class="fa-solid fa-arrow-left"></i> Back to Home
+    </a>
+
+  </section>
+
+</body>
+
+</html>
