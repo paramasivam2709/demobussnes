@@ -69,6 +69,17 @@ p {
   padding: 120px 200px;
 }
 
+.logo {
+  width: 35px !important;
+  height: auto !important;
+  max-width: none !important;
+  display: block;
+}
+
+.logo__link {
+  display: inline-block;
+}
+
 .title-xxl {
   font-size: 6.25rem;
   line-height: 1.3;
@@ -2400,13 +2411,13 @@ img.testimonials-avatar.slider__avatar--active {
 .footer__bottom {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   column-gap: 2rem;
-  row-gap: 1.5rem;
-  margin-top: 3.5rem;
+  row-gap: 1rem;
+  margin-top: 1.5rem;
   border-top: 1px solid var(--clr-midnight);
-  padding-top: 3rem;
+  padding-top: 1.5rem;
 }
 
 .footer__copyright,
